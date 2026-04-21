@@ -9,19 +9,25 @@ import {
 import { auth } from "./client";
 
 export async function configurarPersistencia(recordarme: boolean): Promise<void> {
-  // TODO: implementar persistencia según el valor de recordarme.
-  // Si recordarme es true, usar browserLocalPersistence.
-  // Si recordarme es false, usar browserSessionPersistence.
+  // Si recordarme es true -- guardamos sesión permanente (localStorage)
+  // Si recordarme es false -- sesión temporal (se borra al cerrar navegador)
+  if (recordarme) {
+    await setPersistence(auth, browserLocalPersistence);
+  } else {
+    await setPersistence(auth, browserSessionPersistence);
+  }
 }
 
 export async function autenticarUsuario(
   correo: string,
   contrasena: string,
 ): Promise<UserCredential> {
-  // TODO: implementar inicio de sesión con Firebase Authentication.
-  throw new Error("Pendiente de implementar");
+  // Se manda a Firebase el correo y contraseña que escribió el usuario
+  // Firebase los verifica y si son correctos regresa los datos del usuario
+  return await signInWithEmailAndPassword(auth, correo, contrasena);
 }
 
 export async function cerrarSesionUsuario(): Promise<void> {
-  // TODO: implementar cierre de sesión.
+  // Le dice a Firebase que cierre la sesión del usuario actual
+  await signOut(auth);
 }
